@@ -1,0 +1,11 @@
+plugins {
+    id "org.sonarqube" version "4.4.1.3373"
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "rooftop-MSA_identity-server"
+        property "sonar.organization", "rooftop-msa"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
