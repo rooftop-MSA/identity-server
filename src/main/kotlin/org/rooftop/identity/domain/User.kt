@@ -8,10 +8,12 @@ internal class User(
     @Id
     @Column(name = "id")
     val id: Long,
-    @Column(name = "name")
+    @Column(name = "name", length = 20, unique = true)
     val name: String,
-    @Column(name = "password")
-    val password: String,
+    @Column(name = "password", length = 255)
+    private var password: String,
+    @Version
+    private var version: Int? = null,
 ) : BaseEntity() {
 
     override fun getId(): Long? {
@@ -20,5 +22,9 @@ internal class User(
 
     fun validPassword(password: String) {
         require(this.password == password) { "Invalid password" }
+    }
+
+    fun updatePassword(newPassword: String) {
+        password = newPassword
     }
 }

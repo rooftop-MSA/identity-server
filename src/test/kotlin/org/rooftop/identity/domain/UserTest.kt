@@ -11,7 +11,7 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 internal class UserTest : DescribeSpec({
 
     describe("validPassword 메소드는") {
-        val user = User(1L, "user", "password")
+        val user = user(1L, "user", "password")
 
         context("올바른 비밀번호가 들어오면,") {
             val validPassword = "password"
