@@ -1,0 +1,24 @@
+plugins {
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.10'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.10'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.10'
+    id 'org.springframework.boot' version "3.1.1"
+    id 'io.spring.dependency-management' version "1.1.1"
+}
+
+group = 'org.rooftop.identity'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClassName = 'org.rooftop.identity.Application'
+}
+
+apply from: 'gradle/spring.gradle'
+apply from: 'gradle/kotest.gradle'
+apply from: 'gradle/jetbrains.gradle'
+apply from: 'gradle/db.gradle'
