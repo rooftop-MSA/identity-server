@@ -11,10 +11,10 @@ import io.kotest.matchers.throwable.shouldHaveMessage
 internal class UserTest : DescribeSpec({
 
     describe("validPassword 메소드는") {
-        val user = user(1L, "user", "password")
+        val user = user(1L, "default_user", "default_password")
 
         context("올바른 비밀번호가 들어오면,") {
-            val validPassword = "password"
+            val validPassword = "default_password"
 
             it("인증을 성공한다.") {
                 val result = shouldNotThrow<IllegalArgumentException> {
@@ -35,6 +35,18 @@ internal class UserTest : DescribeSpec({
 
                 result::class shouldBe IllegalArgumentException::class
                 result shouldHaveMessage "Invalid password"
+            }
+        }
+    }
+
+    describe("생성자는") {
+
+        context("name이 20자를 초과할경우,") {
+
+            it("IllegalArgumentException을 던진다.") {
+                shouldThrow<IllegalArgumentException> {
+                    user(name = "123456789_123456789_123456789")
+                }
             }
         }
     }
