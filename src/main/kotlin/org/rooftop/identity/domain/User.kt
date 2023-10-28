@@ -53,7 +53,7 @@ internal class User(
         }
     }
 
-    fun getName(): String = name
+    internal fun getName(): String = name
 
     private companion object {
         private const val MIN_PASSWORD_LENGTH = 10
