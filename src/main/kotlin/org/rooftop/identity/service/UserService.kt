@@ -53,6 +53,7 @@ internal class UserService(
 
         user.validPassword(request.password)
 
+        userRepository.delete(user)
     }
 
     private fun getById(id: Long): User = userRepository.findByIdOrNull(id)
