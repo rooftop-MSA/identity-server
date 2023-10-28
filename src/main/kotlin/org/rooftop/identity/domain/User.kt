@@ -9,7 +9,7 @@ internal class User(
     @Column(name = "id")
     val id: Long,
     @Column(name = "name", length = 20, unique = true)
-    val name: String,
+    private var name: String,
     @Column(name = "password", length = 255)
     private var password: String,
     @Version
@@ -17,10 +17,8 @@ internal class User(
 ) : BaseEntity() {
 
     init {
-        require(name.length in MIN_NAME_LENGTH..MAX_NAME_LENGTH)
-        { "Invalid name length \"${name.length}\"" }
-        require(password.length in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH)
-        { "Invalid password length \"${password.length}\"" }
+        validNameLength(name)
+        validPasswordLength(password)
     }
 
     override fun getId(): Long? {
@@ -31,11 +29,31 @@ internal class User(
         require(this.password == password) { "Invalid password" }
     }
 
-    fun updatePassword(newPassword: String) {
-        require(password.length in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH)
-        { "Invalid password length \"${password.length}\"" }
-        password = newPassword
+    fun update(newName: String?, newPassword: String?) {
+        newName?.let {
+            validNameLength(it)
+            name = it
+        }
+
+        newPassword?.let {
+            validPasswordLength(it)
+            password = it
+        }
     }
+
+    private fun validNameLength(name: String) {
+        require(name.length in MIN_NAME_LENGTH..MAX_NAME_LENGTH) {
+            "Invalid name length \"${name.length}\""
+        }
+    }
+
+    private fun validPasswordLength(password: String) {
+        require(password.length in MIN_PASSWORD_LENGTH..MAX_PASSWORD_LENGTH) {
+            "Invalid password length \"${password.length}\""
+        }
+    }
+
+    fun getName(): String = name
 
     private companion object {
         private const val MIN_PASSWORD_LENGTH = 10
