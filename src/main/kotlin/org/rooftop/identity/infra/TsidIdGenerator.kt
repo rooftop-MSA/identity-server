@@ -10,7 +10,7 @@ import java.util.stream.IntStream
 internal class TsidIdGenerator : IdGenerator {
 
     override fun generate(): Long {
-        val factoryId = Thread.currentThread().threadId().toInt()
+        val factoryId = Thread.currentThread().id.toInt() % MAX_THREAD_ID
         val tsidFactory = tsidFactories[factoryId]
             ?: throw IllegalStateException("Cannot find right id generator \"$factoryId\"")
 
@@ -18,8 +18,9 @@ internal class TsidIdGenerator : IdGenerator {
     }
 
     private companion object {
+        private const val MAX_THREAD_ID = 250
         private val tsidFactories: Map<Int, TsidFactory> = mapOf(
-            *IntStream.range(0, 251)
+            *IntStream.range(0, MAX_THREAD_ID + 1)
                 .mapToObj { factoryId -> factoryId to TsidFactory.newInstance256(factoryId) }
                 .collect(Collectors.toList())
                 .toTypedArray()
