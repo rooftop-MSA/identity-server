@@ -9,8 +9,12 @@ internal fun user(
     id: Long = sequenceIdGenerator.invoke(),
     name: String = "default_name",
     password: String = "default_password",
+    isNew: Boolean = false,
+    version: Int = 0,
 ) = User(
     id = id,
     name = name,
-    password = password
+    password = password,
+    isNew = isNew,
+    version = version,
 )

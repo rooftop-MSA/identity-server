@@ -20,7 +20,7 @@ application {
 }
 
 apply from: 'gradle/spring.gradle'
-apply from: 'gradle/kotest.gradle'
+apply from: 'gradle/test.gradle'
 apply from: 'gradle/jetbrains.gradle'
 apply from: 'gradle/db.gradle'
 apply from: 'gradle/sonar.gradle'
