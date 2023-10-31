@@ -1,4 +1,4 @@
-create table users(
+create table if not exists users(
   id BIGINT primary key,
   name VARCHAR(20) unique not null,
   password VARCHAR(255) not null,

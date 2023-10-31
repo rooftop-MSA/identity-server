@@ -1,7 +1,6 @@
 package org.rooftop.identity.domain
 
 import org.rooftop.identity.domain.request.UserCreateRequest
-import org.rooftop.identity.domain.request.UserDeleteRequest
 import org.rooftop.identity.domain.request.UserLoginRequest
 import org.rooftop.identity.domain.request.UserUpdateRequest
 import org.rooftop.identity.domain.response.UserResponse
@@ -16,6 +15,6 @@ internal interface UserUsecase {
 
     fun updateUser(request: UserUpdateRequest): Mono<Unit>
 
-    fun deleteUser(request: UserDeleteRequest): Mono<Unit>
+    fun deleteUser(id: Long, password: String): Mono<Unit>
 
 }
