@@ -1,11 +1,9 @@
 package org.rooftop.identity.domain
 
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
+import org.springframework.data.r2dbc.repository.R2dbcRepository
+import reactor.core.publisher.Mono
 
-internal interface UserRepository : JpaRepository<User, Long> {
+internal interface UserRepository : R2dbcRepository<User, Long> {
 
-    @Query("select u from User as u where u.name = :name")
-    fun findByNameOrNull(@Param("name") name: String): User?
+    fun findByName(name: String): Mono<User>
 }

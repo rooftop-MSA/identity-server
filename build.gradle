@@ -20,8 +20,9 @@ application {
 }
 
 apply from: 'gradle/spring.gradle'
-apply from: 'gradle/kotest.gradle'
+apply from: 'gradle/test.gradle'
 apply from: 'gradle/jetbrains.gradle'
 apply from: 'gradle/db.gradle'
 apply from: 'gradle/sonar.gradle'
 apply from: 'gradle/etc-lib.gradle'
+apply from: 'gradle/flyway.gradle'

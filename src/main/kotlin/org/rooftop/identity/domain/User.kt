@@ -1,27 +1,38 @@
 package org.rooftop.identity.domain
 
-import jakarta.persistence.*
+import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.PersistenceCreator
+import org.springframework.data.annotation.Version
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
 
-@Entity
-@Table(name = "users", indexes = [Index(name = "idx_users_name", columnList = "name")])
+@Table(name = "users")
 internal class User(
     @Id
-    @Column(name = "id")
+    @Column("id")
     val id: Long,
-    @Column(name = "name", length = 20, unique = true)
+    @Column("name")
     private var name: String,
-    @Column(name = "password", length = 255)
+    @Column("password")
     private var password: String,
     @Version
     private var version: Int? = null,
-) : BaseEntity() {
+    isNew: Boolean = false,
+) : BaseEntity(isNew) {
+
+    @PersistenceCreator
+    constructor(
+        id: Long,
+        name: String,
+        password: String,
+    ) : this(id, name, password, isNew = false)
 
     init {
         validNameLength(name)
         validPasswordLength(password)
     }
 
-    override fun getId(): Long? {
+    override fun getId(): Long {
         return id
     }
 
@@ -54,6 +65,10 @@ internal class User(
     }
 
     internal fun getName(): String = name
+    override fun toString(): String {
+        return "User(id=$id, name='$name', password='$password', version=$version)"
+    }
+
 
     private companion object {
         private const val MIN_PASSWORD_LENGTH = 10

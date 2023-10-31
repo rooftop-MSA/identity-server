@@ -3,14 +3,16 @@ test {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = '17'
+    kotlinOptions.jvmTarget = '19'
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = '17'
+    kotlinOptions.jvmTarget = '19'
 }
 
 dependencies {
+    testImplementation 'io.projectreactor:reactor-test'
+
     testImplementation 'io.kotest:kotest-runner-junit5:5.7.2'
     testImplementation 'io.kotest:kotest-assertions-core:5.7.2'
     testImplementation 'io.kotest.extensions:kotest-extensions-spring:1.1.3'
