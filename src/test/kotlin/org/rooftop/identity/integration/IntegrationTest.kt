@@ -12,11 +12,9 @@ import org.rooftop.identity.domain.request.UserUpdateRequest
 import org.rooftop.identity.domain.response.UserResponse
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.r2dbc.config.EnableR2dbcAuditing
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.test.web.reactive.server.WebTestClient
 
-@EnableR2dbcAuditing
 @AutoConfigureWebTestClient
 @DisplayName("User API 테스트의")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
