@@ -10,7 +10,7 @@ import java.util.stream.IntStream
 internal class TsidIdGenerator : IdGenerator {
 
     override fun generate(): Long {
-        val factoryId = Thread.currentThread().id.toInt() % MAX_THREAD_ID
+        val factoryId = Thread.currentThread().threadId().toInt() % MAX_THREAD_ID
         val tsidFactory = tsidFactories[factoryId]
             ?: throw IllegalStateException("Cannot find right id generator \"$factoryId\"")
 
