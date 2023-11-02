@@ -41,7 +41,7 @@ internal class UserController(private val userUsecase: UserUsecase) {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleIllegalArgumentException(exception: IllegalArgumentException): ErrorTemplate =
-        ErrorTemplate(exception.message!!)
+    private fun handleIllegalArgumentException(exception: IllegalArgumentException): Mono<ErrorTemplate> =
+        Mono.just(ErrorTemplate(exception.message!!))
 
 }
