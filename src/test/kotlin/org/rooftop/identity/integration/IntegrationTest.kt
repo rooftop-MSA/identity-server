@@ -156,6 +156,44 @@ internal class IntegrationTest(
             }
         }
     }
+
+    describe("토큰 검증 API는") {
+        context("올바른 토큰이 들어오면,") {
+            webClient.createUser(userCreateRequest)
+            val requesterId = webClient.getUserId(NAME)
+            val token = webClient.loginAndGetToken(userLoginRequest)
+
+            it("200 OK를 반환한다.") {
+                webClient.auth(token, requesterId)
+                    .expectStatus().isOk
+            }
+        }
+
+        context("올바르지 않은 토큰이 들어오면,") {
+            val invalidRequesterId = 123L
+            val invalidToken = "123"
+
+            it("401 UnAuthorized가 반환된다.") {
+                webClient.auth(invalidToken, invalidRequesterId)
+                    .expectStatus().isUnauthorized
+            }
+        }
+
+        context("토큰은 올바르지만, requesterId와 일치하지 않는다면,") {
+            val secondUser = UserCreateRequest("SECOND_USER", "PASSWORD_1234")
+            
+            webClient.createUser(userCreateRequest)
+            webClient.createUser(secondUser)
+
+            val secondUserId = webClient.getUserId(secondUser.name)
+            val firstUserToken = webClient.loginAndGetToken(userLoginRequest)
+
+            it("401 Unauthorized가 반환된다.") {
+                webClient.auth(firstUserToken, secondUserId)
+                    .expectStatus().isUnauthorized
+            }
+        }
+    }
 }) {
 
     companion object {

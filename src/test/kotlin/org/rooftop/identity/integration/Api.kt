@@ -4,6 +4,7 @@ import org.rooftop.identity.domain.request.UserCreateRequest
 import org.rooftop.identity.domain.request.UserLoginRequest
 import org.rooftop.identity.domain.request.UserUpdateRequest
 import org.rooftop.identity.domain.response.UserResponse
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 
@@ -47,6 +48,15 @@ internal fun WebTestClient.updateUser(
         .exchange()
 }
 
+internal fun WebTestClient.loginAndGetToken(
+    body: UserLoginRequest,
+): String {
+    return login(body)
+        .expectBody(Map::class.java)
+        .returnResult()
+        .responseBody!!["token"]!!.toString()
+}
+
 internal fun WebTestClient.login(
     body: UserLoginRequest,
 ): WebTestClient.ResponseSpec {
@@ -67,5 +77,13 @@ internal fun WebTestClient.deleteUser(
             it["id"] = id.toString()
             it["password"] = password
         }
+        .exchange()
+}
+
+internal fun WebTestClient.auth(token: String, requesterId: Long): WebTestClient.ResponseSpec {
+    return this.get()
+        .uri("$VERSION/auths")
+        .header(HttpHeaders.AUTHORIZATION, token)
+        .header("RequesterId", requesterId.toString())
         .exchange()
 }
