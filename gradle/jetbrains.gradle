@@ -1,6 +1,13 @@
-dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+compileKotlin {
+    kotlinOptions.jvmTarget = "${jvmTarget}"
+}
 
-    testImplementation 'com.h2database:h2'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "${jvmTarget}"
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
+
+    testImplementation "org.jetbrains.kotlin:kotlin-test"
 }

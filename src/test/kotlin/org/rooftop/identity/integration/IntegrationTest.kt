@@ -6,10 +6,7 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
 import io.kotest.matchers.shouldNotBe
-import org.rooftop.identity.domain.request.UserCreateRequest
-import org.rooftop.identity.domain.request.UserLoginRequest
-import org.rooftop.identity.domain.request.UserUpdateRequest
-import org.rooftop.identity.domain.response.UserResponse
+import org.rooftop.api.identity.*
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
@@ -50,13 +47,19 @@ internal class IntegrationTest(
 
         context("저장된 유저를 조회할 경우,") {
             webClient.createUser(userCreateRequest)
-            val expectedUserResponse = UserResponse(0L, NAME)
+            val expectedUserResponse = userGetRes {
+                id = 0L
+                name = NAME
+            }
 
             it("유저 정보를 반환한다.") {
                 webClient.getUser(NAME)
                     .expectStatus().isOk
                     .expectBody()
-                    .shouldBeEqualToIgnoringFields(expectedUserResponse, UserResponse::id)
+                    .shouldBeEqualToIgnoringFields(
+                        expectedUserResponse,
+                        UserGetRes::ID_FIELD_NUMBER
+                    )
             }
         }
 
@@ -78,19 +81,30 @@ internal class IntegrationTest(
 
             it("유저를 update한다.") {
                 val id = webClient.getUserId(NAME)
-                val request = UserUpdateRequest(id, newName, newPassword)
+                val request = userUpdateReq {
+                    this.id = id
+                    this.newName = newName
+                    this.newPassword = newPassword
+                }
 
                 webClient.updateUser(request).expectStatus().isOk
 
                 webClient.getUser(newName)
                     .expectStatus().isOk
-                    .expectBody().shouldBeEqualToComparingFields(UserResponse(id, newName))
+                    .expectBody().shouldBeEqualToComparingFields(userGetRes {
+                        this.id = id
+                        this.name = newName
+                    })
             }
         }
 
         context("저장되지 않은 유저의 id로 update 요청이 들어올경우,") {
             val notExistId = 1L
-            val invalidUpdateRequest = UserUpdateRequest(notExistId, newName, newPassword)
+            val invalidUpdateRequest = userUpdateReq {
+                id = notExistId
+                this.newName = newName
+                this.newPassword = newPassword
+            }
 
             it("400 BadRequest를 던진다.") {
                 webClient.updateUser(invalidUpdateRequest)
@@ -114,8 +128,10 @@ internal class IntegrationTest(
         context("유저의 name과 비밀번호가 일치하지 않을경우,") {
             webClient.createUser(userCreateRequest)
             it("IllegalArgumentException을 던진다.") {
-                webClient.login(UserLoginRequest(NAME, "invalid_password"))
-                    .expectStatus().isBadRequest
+                webClient.login(userLoginReq {
+                    name = NAME
+                    password = "invalid_password"
+                }).expectStatus().isBadRequest
             }
         }
     }
@@ -180,8 +196,11 @@ internal class IntegrationTest(
         }
 
         context("토큰은 올바르지만, requesterId와 일치하지 않는다면,") {
-            val secondUser = UserCreateRequest("SECOND_USER", "PASSWORD_1234")
-            
+            val secondUser = userCreateReq {
+                name = "SECOND_USER"
+                password = "PASSWORD_1234"
+            }
+
             webClient.createUser(userCreateRequest)
             webClient.createUser(secondUser)
 
@@ -199,7 +218,13 @@ internal class IntegrationTest(
     companion object {
         private const val NAME = "NAME_123"
         private const val PASSWORD = "12345678910"
-        private val userCreateRequest = UserCreateRequest(NAME, PASSWORD)
-        private val userLoginRequest = UserLoginRequest(NAME, PASSWORD)
+        private val userCreateRequest = userCreateReq {
+            this.name = NAME
+            this.password = PASSWORD
+        }
+        private val userLoginRequest = userLoginReq {
+            this.name = NAME
+            this.password = PASSWORD
+        }
     }
 }

@@ -12,7 +12,7 @@ internal class AuthController(private val authUsecase: AuthUsecase) {
 
     @GetMapping("/v1/auths")
     @ResponseStatus(HttpStatus.OK)
-    fun login(
+    fun auth(
         @RequestHeader(HttpHeaders.AUTHORIZATION) token: String,
         @RequestHeader("RequesterId") requesterId: Long,
     ): Mono<Unit> {
