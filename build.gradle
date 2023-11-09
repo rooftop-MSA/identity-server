@@ -1,27 +1,29 @@
 plugins {
-    id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '1.9.10'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.10'
-    id 'org.springframework.boot' version "3.1.1"
-    id 'io.spring.dependency-management' version "1.1.1"
-    id "org.sonarqube" version "4.4.1.3373"
+    id "application"
+    id "org.jetbrains.kotlin.jvm" version "${jetbrainKotlinVersion}"
+    id "org.jetbrains.kotlin.plugin.spring" version "${jetbrainKotlinVersion}"
+    id "org.springframework.boot" version "${springbootVersion}"
+    id "io.spring.dependency-management" version "${springDependencyManagementVersion}"
+    id "org.sonarqube" version "${sonarcloudVersion}"
+    id "com.google.protobuf" version "${protobufPluginVersion}"
 }
 
-group = 'org.rooftop.identity'
-version = '1.0'
+group = "${group}"
+version = "${version}"
 
 repositories {
     mavenCentral()
 }
 
 application {
-    mainClassName = 'org.rooftop.identity.Application'
+    mainClassName = "org.rooftop.identity.Application"
 }
 
-apply from: 'gradle/spring.gradle'
-apply from: 'gradle/test.gradle'
-apply from: 'gradle/jetbrains.gradle'
-apply from: 'gradle/db.gradle'
-apply from: 'gradle/sonar.gradle'
-apply from: 'gradle/etc-lib.gradle'
-apply from: 'gradle/flyway.gradle'
+apply from: "gradle/spring.gradle"
+apply from: "gradle/test.gradle"
+apply from: "gradle/jetbrains.gradle"
+apply from: "gradle/db.gradle"
+apply from: "gradle/sonar.gradle"
+apply from: "gradle/etc-lib.gradle"
+apply from: "gradle/flyway.gradle"
+apply from: "gradle/protobuf.gradle"
