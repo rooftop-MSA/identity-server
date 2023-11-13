@@ -73,5 +73,4 @@ internal class UserController(private val userUsecase: UserUsecase) {
     @ExceptionHandler(IllegalArgumentException::class)
     private fun handleIllegalArgumentException(exception: IllegalArgumentException): Mono<ErrorRes> =
         Mono.just(errorRes { message = exception.message!! })
-
 }
