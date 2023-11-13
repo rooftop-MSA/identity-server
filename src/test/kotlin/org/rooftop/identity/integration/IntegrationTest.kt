@@ -120,8 +120,8 @@ internal class IntegrationTest(
             it("token을 반환한다.") {
                 webClient.login(userLoginRequest)
                     .expectStatus().isOk
-                    .expectBody(Map::class.java)
-                    .returnResult().responseBody["token"] shouldNotBe null
+                    .expectBody(UserLoginRes::class.java)
+                    .returnResult().responseBody?.token shouldNotBe null
             }
         }
 

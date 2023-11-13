@@ -1,9 +1,6 @@
 package org.rooftop.identity.integration
 
-import org.rooftop.api.identity.UserCreateReq
-import org.rooftop.api.identity.UserGetRes
-import org.rooftop.api.identity.UserLoginReq
-import org.rooftop.api.identity.UserUpdateReq
+import org.rooftop.api.identity.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -51,9 +48,9 @@ internal fun WebTestClient.loginAndGetToken(
     body: UserLoginReq,
 ): String {
     return login(body)
-        .expectBody(Map::class.java)
+        .expectBody(UserLoginRes::class.java)
         .returnResult()
-        .responseBody!!["token"]!!.toString()
+        .responseBody?.token ?: throw IllegalStateException("Test fail cause responseBody is null")
 }
 
 internal fun WebTestClient.login(

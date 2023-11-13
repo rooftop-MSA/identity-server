@@ -1,5 +1,7 @@
 package org.rooftop.identity.controller
 
+import org.rooftop.api.identity.ErrorRes
+import org.rooftop.api.identity.errorRes
 import org.rooftop.identity.domain.AuthUsecase
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -21,6 +23,6 @@ internal class AuthController(private val authUsecase: AuthUsecase) {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationException::class)
-    private fun handleAuthenticationException(exception: AuthenticationException):
-            Mono<ErrorTemplate> = Mono.just(ErrorTemplate(exception.message!!))
+    private fun handleAuthenticationException(exception: AuthenticationException): Mono<ErrorRes> =
+        Mono.just(errorRes { message = exception.message!! })
 }

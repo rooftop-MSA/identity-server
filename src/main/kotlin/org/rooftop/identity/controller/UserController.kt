@@ -56,18 +56,21 @@ internal class UserController(private val userUsecase: UserUsecase) {
 
     @PostMapping("/v1/logins")
     @ResponseStatus(HttpStatus.OK)
-    fun login(@RequestBody request: UserLoginReq): Mono<Map<String, String>> {
+    fun login(@RequestBody request: UserLoginReq): Mono<UserLoginRes> {
         return userUsecase.login(
             UserLoginRequest(
                 request.name,
                 request.password
             )
-        ).map { mapOf("token" to it) }
+        ).map {
+            userLoginRes {
+                token = it
+            }
+        }
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException::class)
-    private fun handleIllegalArgumentException(exception: IllegalArgumentException): Mono<ErrorTemplate> =
-        Mono.just(ErrorTemplate(exception.message!!))
-
+    private fun handleIllegalArgumentException(exception: IllegalArgumentException): Mono<ErrorRes> =
+        Mono.just(errorRes { message = exception.message!! })
 }
