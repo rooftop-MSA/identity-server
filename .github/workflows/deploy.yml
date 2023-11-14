@@ -1,9 +1,11 @@
 name: 🔖 deployer
 
 on:
-  release:
+  workflow_run:
+    workflows:
+      - "🎇 Image builder"
     types:
-      - 'created'
+      - "completed"
 
 jobs:
   deploy:
