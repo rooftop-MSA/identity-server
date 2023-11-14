@@ -1,15 +1,14 @@
 name: 🔖 deployer
 
 on:
-  release:
-    - 'published'
+  push:
+    tags:
+      - '*.*.*'
 
 jobs:
   deploy:
     name: deploy server
     runs-on: self-hosted
-    permissions:
-      packages: write
     steps:
       - name: checkout code
         uses: actions/checkout@v3
