@@ -1,7 +1,11 @@
 name: 🔖 deployer
 
 on:
-  release: published
+  workflow_run:
+    workflows:
+      - "🎇 Image builder"
+    types:
+      - "completed"
 
 jobs:
   deploy:
@@ -17,7 +21,7 @@ jobs:
           host: 192.168.35.190
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-        script: |
-          docker pull ghcr.io/rooftop-msa/identity:${{ github.ref_name }}
-          docker ps -aq | xargs docker stop | xargs docker rm
-          docker run -d -p 8080:8080 ghcr.io/rooftop-msa/identity:${{ github.ref_name }}
+          script: |
+            docker pull ghcr.io/rooftop-msa/identity:${{ github.ref_name }}
+            docker ps -aq | xargs docker stop | xargs docker rm
+            docker run -d -p 8080:8080 --cpus 2 --memory 2G ghcr.io/rooftop-msa/identity:${{ github.ref_name }}
