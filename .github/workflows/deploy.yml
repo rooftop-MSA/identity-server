@@ -1,7 +1,8 @@
 name: 🔖 deployer
 
 on:
-  release: published
+  release:
+    - 'published'
 
 jobs:
   deploy:
@@ -20,4 +21,4 @@ jobs:
         script: |
           docker pull ghcr.io/rooftop-msa/identity:${{ github.ref_name }}
           docker ps -aq | xargs docker stop | xargs docker rm
-          docker run -d -p 8080:8080 ghcr.io/rooftop-msa/identity:${{ github.ref_name }}
+          docker run -d -p 8080:8080 --cpus 2 --memory 2G ghcr.io/rooftop-msa/identity:${{ github.ref_name }}
