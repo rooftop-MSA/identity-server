@@ -1,0 +1,23 @@
+name: 🔖 deployer
+
+on:
+  release: published
+
+jobs:
+  deploy:
+    name: deploy server
+    runs-on: self-hosted
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: 192.168.35.190
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+        script: |
+          docker pull ghcr.io/rooftop-msa/identity:${{ github.ref_name }}
+          docker ps -aq | xargs docker stop | xargs docker rm
+          docker run -d -p 8080:8080 ghcr.io/rooftop-msa/identity:${{ github.ref_name }}
