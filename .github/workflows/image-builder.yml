@@ -60,7 +60,7 @@ jobs:
           platforms: linux/arm64/v8
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/identity:${{ steps.extract_version_name.outputs.version }}
+            ghcr.io/rooftop-msa/identity:${{ steps.extract_version_name.outputs.version }}
 
       - name: create release
         uses: actions/create-release@v1
