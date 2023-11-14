@@ -56,6 +56,14 @@ internal class UserTest : DescribeSpec({
                 }
             }
         }
+
+        context("username이 20자를 초과할  경우,") {
+            it("IllegalArgumentException을 던진다.") {
+                shouldThrow<IllegalArgumentException> {
+                    user(userName = overflowUserName)
+                }
+            }
+        }
     }
 
     describe("update 메소드는") {
@@ -75,12 +83,22 @@ internal class UserTest : DescribeSpec({
                 }
             }
         }
+
+        context("username이 20자를 초과할 경우,") {
+            it("IllegalArgumentException을 던진다.") {
+                shouldThrow<IllegalArgumentException> {
+                    user(userName = overflowUserName)
+                }
+            }
+        }
     }
 }) {
     companion object {
         private const val MAX_NAME_LENGTH = 20
+        private const val MAX_USER_NAME_LENGTH = 20
         private const val MAX_PASSWORD_LENGTH = 255
         private val overflowName = "-".repeat(MAX_NAME_LENGTH + 1)
         private val overflowPassword = "-".repeat(MAX_PASSWORD_LENGTH + 1)
+        private val overflowUserName = "-".repeat(MAX_USER_NAME_LENGTH + 1)
     }
 }
