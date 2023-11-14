@@ -30,6 +30,7 @@ internal class UserController(private val userUsecase: UserUsecase) {
         return userUsecase.createUser(
             UserCreateRequest(
                 request.name,
+                request.userName,
                 request.password
             )
         )
@@ -42,6 +43,7 @@ internal class UserController(private val userUsecase: UserUsecase) {
             UserUpdateRequest(
                 request.id,
                 request.newName,
+                request.newUserName,
                 request.newPassword
             )
         )

@@ -40,7 +40,13 @@ internal class UserService(
         return userRepository.findByName(request.name)
             .switchIfEmpty(
                 userRepository.save(
-                    User(idGenerator.generate(), request.name, request.password, isNew = true)
+                    User(
+                        idGenerator.generate(),
+                        request.name,
+                        request.userName,
+                        request.password,
+                        isNew = true
+                    )
                 )
             )
             .filterWhen { isNotNew(it) }
@@ -63,7 +69,7 @@ internal class UserService(
 
     private fun updateUser(user: User, request: UserUpdateRequest): Mono<User> {
         return user.run {
-            this.update(request.newName, request.newPassword)
+            this.update(request.newName, request.newUserName, request.newPassword)
             userRepository.save(this)
         }
     }

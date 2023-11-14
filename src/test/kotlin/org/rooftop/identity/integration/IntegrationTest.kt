@@ -74,6 +74,7 @@ internal class IntegrationTest(
 
     describe("유저 업데이트 API는") {
         val newName = "NEW_NAME"
+        val newUserName = "Christoper"
         val newPassword = "NEW_PASSWORD"
 
         context("저장된 유저의 update 요청이 들어올경우,") {
@@ -84,6 +85,7 @@ internal class IntegrationTest(
                 val request = userUpdateReq {
                     this.id = id
                     this.newName = newName
+                    this.newUserName = newUserName
                     this.newPassword = newPassword
                 }
 
@@ -198,6 +200,7 @@ internal class IntegrationTest(
         context("토큰은 올바르지만, requesterId와 일치하지 않는다면,") {
             val secondUser = userCreateReq {
                 name = "SECOND_USER"
+                userName = "James"
                 password = "PASSWORD_1234"
             }
 
@@ -217,9 +220,11 @@ internal class IntegrationTest(
 
     companion object {
         private const val NAME = "NAME_123"
+        private const val USER_NAME = "Jennifer"
         private const val PASSWORD = "12345678910"
         private val userCreateRequest = userCreateReq {
             this.name = NAME
+            this.userName = USER_NAME
             this.password = PASSWORD
         }
         private val userLoginRequest = userLoginReq {
