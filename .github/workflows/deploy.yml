@@ -1,9 +1,8 @@
 name: 🔖 deployer
 
 on:
-  push:
+  release:
     tags:
-      - '*.*.*'
 
 jobs:
   deploy:
