@@ -1,4 +1,4 @@
-name: Integration tester
+name: ✅ Integration tester
 on:
   push:
     branches:
