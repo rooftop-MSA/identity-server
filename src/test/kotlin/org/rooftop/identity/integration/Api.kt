@@ -31,6 +31,7 @@ internal fun WebTestClient.getUser(
 ): WebTestClient.ResponseSpec {
     return this.get()
         .uri("$VERSION/users?name=$name")
+        .accept(MediaType.APPLICATION_PROTOBUF)
         .exchange()
 }
 
@@ -59,6 +60,7 @@ internal fun WebTestClient.login(
     return this.post()
         .uri("$VERSION/logins")
         .contentType(MediaType.APPLICATION_PROTOBUF)
+        .accept(MediaType.APPLICATION_PROTOBUF)
         .bodyValue(body)
         .exchange()
 }

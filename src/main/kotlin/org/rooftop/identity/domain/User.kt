@@ -1,21 +1,19 @@
 package org.rooftop.identity.domain
 
-import org.springframework.data.annotation.Id
+import jakarta.persistence.*
 import org.springframework.data.annotation.PersistenceCreator
-import org.springframework.data.annotation.Version
-import org.springframework.data.relational.core.mapping.Column
-import org.springframework.data.relational.core.mapping.Table
 
+@Entity
 @Table(name = "users")
 internal class User(
     @Id
-    @Column("id")
+    @Column(name = "id")
     val id: Long,
-    @Column("name")
+    @Column(name = "name")
     private var name: String,
-    @Column("user_name")
+    @Column(name = "user_name")
     private var userName: String,
-    @Column("password")
+    @Column(name = "password")
     private var password: String,
     @Version
     private var version: Int? = null,

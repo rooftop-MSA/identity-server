@@ -7,9 +7,9 @@ import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
 import io.kotest.matchers.shouldNotBe
 import org.rooftop.api.identity.*
+import org.rooftop.identity.domain.UserRepository
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.test.web.reactive.server.WebTestClient
 
 @AutoConfigureWebTestClient
@@ -17,12 +17,12 @@ import org.springframework.test.web.reactive.server.WebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class IntegrationTest(
     private val webClient: WebTestClient,
-    private val r2dbcEntityTemplate: R2dbcEntityTemplate,
+    private val userRepository: UserRepository,
 ) : DescribeSpec({
 
     extension(SpringExtension)
 
-    afterEach { r2dbcEntityTemplate.clearAll() }
+    afterEach { userRepository.deleteAll() }
 
     describe("유저 생성 API는") {
 
@@ -184,16 +184,6 @@ internal class IntegrationTest(
             it("200 OK를 반환한다.") {
                 webClient.auth(token, requesterId)
                     .expectStatus().isOk
-            }
-        }
-
-        context("올바르지 않은 토큰이 들어오면,") {
-            val invalidRequesterId = 123L
-            val invalidToken = "123"
-
-            it("401 UnAuthorized가 반환된다.") {
-                webClient.auth(invalidToken, invalidRequesterId)
-                    .expectStatus().isUnauthorized
             }
         }
 

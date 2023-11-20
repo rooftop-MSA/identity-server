@@ -4,17 +4,16 @@ import org.rooftop.identity.domain.request.UserCreateRequest
 import org.rooftop.identity.domain.request.UserLoginRequest
 import org.rooftop.identity.domain.request.UserUpdateRequest
 import org.rooftop.identity.domain.response.UserResponse
-import reactor.core.publisher.Mono
 
 internal interface UserUsecase {
 
-    fun getByName(name: String): Mono<UserResponse>
-    fun login(request: UserLoginRequest): Mono<String>
+    fun getByName(name: String): UserResponse
+    fun login(request: UserLoginRequest): String
 
-    fun createUser(request: UserCreateRequest): Mono<Unit>
+    fun createUser(request: UserCreateRequest): Unit
 
-    fun updateUser(request: UserUpdateRequest): Mono<Unit>
+    fun updateUser(request: UserUpdateRequest): Unit
 
-    fun deleteUser(id: Long, password: String): Mono<Unit>
+    fun deleteUser(id: Long, password: String): Unit
 
 }
