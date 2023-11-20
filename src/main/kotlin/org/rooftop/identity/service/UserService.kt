@@ -5,10 +5,9 @@ import org.rooftop.identity.domain.request.UserCreateRequest
 import org.rooftop.identity.domain.request.UserLoginRequest
 import org.rooftop.identity.domain.request.UserUpdateRequest
 import org.rooftop.identity.domain.response.UserResponse
-import org.springframework.data.r2dbc.repository.Modifying
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import reactor.core.publisher.Mono
 
 @Service
 @Transactional(readOnly = true)
@@ -18,56 +17,49 @@ internal class UserService(
     private val token: Token,
 ) : UserUsecase {
 
-    override fun login(request: UserLoginRequest): Mono<String> {
-        return userRepository.findByName(request.name)
-            .switchIfEmpty(Mono.error { throw IllegalArgumentException("Cannot find exist user name \"${request.name}\"") })
-            .flatMap { getToken(it, request) }
+    override fun login(request: UserLoginRequest): String {
+        val user = userRepository.findByNameOrNull(request.name)
+            ?: throw IllegalArgumentException("Cannot find exist user name \"${request.name}\"")
+        return getToken(user, request)
     }
 
-    private fun getToken(user: User, request: UserLoginRequest): Mono<String> {
+    private fun getToken(user: User, request: UserLoginRequest): String {
         user.validPassword(request.password)
-        return Mono.just(token.getToken(user.id))
+        return token.getToken(user.id)
     }
 
-    override fun getByName(name: String): Mono<UserResponse> {
-        return userRepository.findByName(name)
-            .switchIfEmpty(Mono.error { throw IllegalArgumentException("Cannot find exist user name \"$name\"") })
-            .map { user -> UserResponse(user.id, user.getName()) }
+    override fun getByName(name: String): UserResponse {
+        val user = userRepository.findByNameOrNull(name)
+            ?: throw IllegalArgumentException("Cannot find exist user name \"$name\"")
+
+        return UserResponse(user.id, user.getName())
     }
 
     @Transactional
-    override fun createUser(request: UserCreateRequest): Mono<Unit> {
-        return userRepository.findByName(request.name)
-            .switchIfEmpty(
-                userRepository.save(
-                    User(
-                        idGenerator.generate(),
-                        request.name,
-                        request.userName,
-                        request.password,
-                        isNew = true
-                    )
-                )
+    override fun createUser(request: UserCreateRequest) {
+        val user = userRepository.findByNameOrNull(request.name)
+
+        if (user != null) {
+            throw IllegalArgumentException("Duplicated user name \"${request.name}\"")
+        }
+
+        userRepository.save(
+            User(
+                idGenerator.generate(),
+                request.name,
+                request.userName,
+                request.password
             )
-            .filterWhen { isNotNew(it) }
-            .map {
-                require(it.isNew) {
-                    throw IllegalArgumentException("Duplicated user name \"${request.name}\"")
-                }
-            }
+        )
     }
 
-    private fun isNotNew(user: User): Mono<Boolean> = Mono.just(!user.isNew)
-
-    @Modifying
     @Transactional
-    override fun updateUser(request: UserUpdateRequest): Mono<Unit> {
-        return getById(request.id)
-            .flatMap { updateUser(it, request) }
-            .map { }
+    override fun updateUser(request: UserUpdateRequest) {
+        var user = getById(request.id)
+        updateUser(user, request)
     }
 
-    private fun updateUser(user: User, request: UserUpdateRequest): Mono<User> {
+    private fun updateUser(user: User, request: UserUpdateRequest): User {
         return user.run {
             this.update(request.newName, request.newUserName, request.newPassword)
             userRepository.save(this)
@@ -75,16 +67,17 @@ internal class UserService(
     }
 
     @Transactional
-    override fun deleteUser(id: Long, password: String): Mono<Unit> {
-        return getById(id).flatMap { deleteUser(it, password) }
+    override fun deleteUser(id: Long, password: String) {
+        val user = getById(id)
+        deleteUser(user, password)
     }
 
-    private fun deleteUser(user: User, password: String): Mono<Unit> {
+    private fun deleteUser(user: User, password: String) {
         user.validPassword(password)
         return userRepository.delete(user)
-            .map { }
     }
 
-    private fun getById(id: Long): Mono<User> = userRepository.findById(id)
-        .switchIfEmpty(Mono.error { throw IllegalArgumentException("Cannot find exist user id \"${id}\"") })
+    private fun getById(id: Long): User =
+        userRepository.findByIdOrNull(id)
+            ?: throw IllegalArgumentException("Cannot find exist user id \"${id}\"")
 }

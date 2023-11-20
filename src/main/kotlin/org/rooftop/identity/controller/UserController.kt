@@ -7,26 +7,24 @@ import org.rooftop.identity.domain.request.UserLoginRequest
 import org.rooftop.identity.domain.request.UserUpdateRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
 
 @RestController
 internal class UserController(private val userUsecase: UserUsecase) {
 
-    @GetMapping("/v1/users")
+    @GetMapping(value = ["/v1/users"])
     @ResponseStatus(HttpStatus.OK)
-    fun getUser(@RequestParam("name") name: String): Mono<UserGetRes> {
-        return userUsecase.getByName(name)
-            .map { response ->
-                userGetRes {
-                    this.id = response.id
-                    this.name = response.name
-                }
-            }
+    fun getUser(@RequestParam("name") name: String): UserGetRes {
+        val userResponse = userUsecase.getByName(name)
+
+        return userGetRes {
+            this.id = userResponse.id
+            this.name = userResponse.name
+        }
     }
 
-    @PostMapping("/v1/users")
+    @PostMapping(value = ["/v1/users"])
     @ResponseStatus(HttpStatus.OK)
-    fun createUser(@RequestBody request: UserCreateReq): Mono<Unit> {
+    fun createUser(@RequestBody request: UserCreateReq) {
         return userUsecase.createUser(
             UserCreateRequest(
                 request.name,
@@ -36,10 +34,10 @@ internal class UserController(private val userUsecase: UserUsecase) {
         )
     }
 
-    @PutMapping("/v1/users")
+    @PutMapping(value = ["/v1/users"])
     @ResponseStatus(HttpStatus.OK)
-    fun updateUser(@RequestBody request: UserUpdateReq): Mono<Unit> {
-        return userUsecase.updateUser(
+    fun updateUser(@RequestBody request: UserUpdateReq) {
+        userUsecase.updateUser(
             UserUpdateRequest(
                 request.id,
                 request.newName,
@@ -49,30 +47,29 @@ internal class UserController(private val userUsecase: UserUsecase) {
         )
     }
 
-    @DeleteMapping("/v1/users")
+    @DeleteMapping(value = ["/v1/users"])
     @ResponseStatus(HttpStatus.OK)
     fun deleteUser(
         @RequestHeader("id") id: Long,
         @RequestHeader("password") password: String,
-    ): Mono<Unit> = userUsecase.deleteUser(id, password)
+    ) = userUsecase.deleteUser(id, password)
 
-    @PostMapping("/v1/logins")
+    @PostMapping(value = ["/v1/logins"])
     @ResponseStatus(HttpStatus.OK)
-    fun login(@RequestBody request: UserLoginReq): Mono<UserLoginRes> {
-        return userUsecase.login(
+    fun login(@RequestBody request: UserLoginReq): UserLoginRes {
+        val token = userUsecase.login(
             UserLoginRequest(
                 request.name,
                 request.password
             )
-        ).map {
-            userLoginRes {
-                token = it
-            }
+        )
+        return userLoginRes {
+            this.token = token
         }
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException::class)
-    private fun handleIllegalArgumentException(exception: IllegalArgumentException): Mono<ErrorRes> =
-        Mono.just(errorRes { message = exception.message!! })
+    private fun handleIllegalArgumentException(exception: IllegalArgumentException): ErrorRes =
+        errorRes { message = exception.message!! }
 }

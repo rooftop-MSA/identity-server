@@ -1,22 +1,23 @@
 package org.rooftop.identity.domain
 
+import jakarta.persistence.Column
+import jakarta.persistence.MappedSuperclass
+import jakarta.persistence.Transient
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.annotation.Transient
 import org.springframework.data.domain.Persistable
-import org.springframework.data.relational.core.mapping.Column
 import java.time.Instant
-import java.util.*
 
+@MappedSuperclass
 internal abstract class BaseEntity(
     @Transient
     private val isNew: Boolean = false,
     @LastModifiedDate
-    @Column("created_at")
-    var createdAt: Instant? = null,
+    @Column(name = "created_at")
+    var createdAt: Instant? = Instant.now(),
     @CreatedDate
-    @Column("modified_at")
-    var modifiedAt: Instant? = null,
+    @Column(name = "modified_at")
+    var modifiedAt: Instant? = Instant.now(),
 ) : Persistable<Long> {
 
     abstract override fun getId(): Long?
