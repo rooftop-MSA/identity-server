@@ -1,9 +1,9 @@
-package org.rooftop.identity.domain
+package org.rooftop.identity.domain.account
 
-import org.rooftop.identity.domain.request.UserCreateRequest
-import org.rooftop.identity.domain.request.UserLoginRequest
-import org.rooftop.identity.domain.request.UserUpdateRequest
-import org.rooftop.identity.domain.response.UserResponse
+import org.rooftop.identity.domain.account.request.UserCreateRequest
+import org.rooftop.identity.domain.account.request.UserLoginRequest
+import org.rooftop.identity.domain.account.request.UserUpdateRequest
+import org.rooftop.identity.domain.account.response.UserResponse
 import reactor.core.publisher.Mono
 
 internal interface UserUsecase {

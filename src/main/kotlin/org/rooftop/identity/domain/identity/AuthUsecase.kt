@@ -1,4 +1,4 @@
-package org.rooftop.identity.domain
+package org.rooftop.identity.domain.identity
 
 import reactor.core.publisher.Mono
 

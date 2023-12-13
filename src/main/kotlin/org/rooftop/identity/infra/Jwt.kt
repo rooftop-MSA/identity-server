@@ -1,7 +1,7 @@
 package org.rooftop.identity.infra
 
 import io.jsonwebtoken.Jwts
-import org.rooftop.identity.domain.Token
+import org.rooftop.identity.domain.identity.Token
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.temporal.ChronoUnit
