@@ -2,7 +2,7 @@ package org.rooftop.identity.controller
 
 import org.rooftop.api.identity.ErrorRes
 import org.rooftop.api.identity.errorRes
-import org.rooftop.identity.domain.AuthUsecase
+import org.rooftop.identity.domain.identity.AuthUsecase
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*

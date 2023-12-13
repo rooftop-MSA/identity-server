@@ -1,10 +1,16 @@
 package org.rooftop.identity.service
 
-import org.rooftop.identity.domain.*
-import org.rooftop.identity.domain.request.UserCreateRequest
-import org.rooftop.identity.domain.request.UserLoginRequest
-import org.rooftop.identity.domain.request.UserUpdateRequest
-import org.rooftop.identity.domain.response.UserResponse
+import org.rooftop.identity.domain.IdGenerator
+import org.rooftop.identity.domain.account.User
+import org.rooftop.identity.domain.account.UserRepository
+import org.rooftop.identity.domain.account.UserUsecase
+import org.rooftop.identity.domain.account.event.UserCreatedEvent
+import org.rooftop.identity.domain.account.request.UserCreateRequest
+import org.rooftop.identity.domain.account.request.UserLoginRequest
+import org.rooftop.identity.domain.account.request.UserUpdateRequest
+import org.rooftop.identity.domain.account.response.UserResponse
+import org.rooftop.identity.domain.identity.Token
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.r2dbc.repository.Modifying
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,6 +22,7 @@ internal class UserService(
     private val userRepository: UserRepository,
     private val idGenerator: IdGenerator,
     private val token: Token,
+    private val eventPublisher: ApplicationEventPublisher,
 ) : UserUsecase {
 
     override fun login(request: UserLoginRequest): Mono<String> {
@@ -37,27 +44,20 @@ internal class UserService(
 
     @Transactional
     override fun createUser(request: UserCreateRequest): Mono<Unit> {
-        return userRepository.findByName(request.name)
-            .switchIfEmpty(
-                userRepository.save(
-                    User(
-                        idGenerator.generate(),
-                        request.name,
-                        request.userName,
-                        request.password,
-                        isNew = true
-                    )
-                )
+        return userRepository.save(
+            User(
+                idGenerator.generate(),
+                request.name,
+                request.userName,
+                request.password,
+                isNew = true
             )
-            .filterWhen { isNotNew(it) }
-            .map {
-                require(it.isNew) {
-                    throw IllegalArgumentException("Duplicated user name \"${request.name}\"")
-                }
-            }
+        ).onErrorMap {
+            throw IllegalArgumentException("Duplicated user name \"${request.name}\"")
+        }.doOnSuccess {
+            eventPublisher.publishEvent(UserCreatedEvent(it.id))
+        }.map { }
     }
-
-    private fun isNotNew(user: User): Mono<Boolean> = Mono.just(!user.isNew)
 
     @Modifying
     @Transactional

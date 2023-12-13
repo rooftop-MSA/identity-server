@@ -1,10 +1,10 @@
 package org.rooftop.identity.controller
 
 import org.rooftop.api.identity.*
-import org.rooftop.identity.domain.UserUsecase
-import org.rooftop.identity.domain.request.UserCreateRequest
-import org.rooftop.identity.domain.request.UserLoginRequest
-import org.rooftop.identity.domain.request.UserUpdateRequest
+import org.rooftop.identity.domain.account.UserUsecase
+import org.rooftop.identity.domain.account.request.UserCreateRequest
+import org.rooftop.identity.domain.account.request.UserLoginRequest
+import org.rooftop.identity.domain.account.request.UserUpdateRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono

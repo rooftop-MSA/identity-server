@@ -1,7 +1,7 @@
 package org.rooftop.identity.service
 
-import org.rooftop.identity.domain.AuthUsecase
-import org.rooftop.identity.domain.Token
+import org.rooftop.identity.domain.identity.AuthUsecase
+import org.rooftop.identity.domain.identity.Token
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import javax.security.sasl.AuthenticationException
