@@ -83,3 +83,10 @@ internal fun WebTestClient.auth(token: String, requesterId: Long): WebTestClient
         .header("RequesterId", requesterId.toString())
         .exchange()
 }
+
+internal fun WebTestClient.getUserByToken(token: String): WebTestClient.ResponseSpec {
+    return this.get()
+        .uri("$VERSION/users/tokens")
+        .header(HttpHeaders.AUTHORIZATION, token)
+        .exchange()
+}

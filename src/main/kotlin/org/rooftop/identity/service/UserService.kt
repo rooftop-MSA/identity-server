@@ -85,6 +85,16 @@ internal class UserService(
             .map { }
     }
 
+    override fun getByToken(token: String): Mono<UserResponse> {
+        return Mono.fromCallable { this.token.getId(token) }
+            .flatMap {
+                getById(it)
+            }
+            .map { user ->
+                UserResponse(user.id, user.getName())
+            }
+    }
+
     private fun getById(id: Long): Mono<User> = userRepository.findById(id)
         .switchIfEmpty(Mono.error { throw IllegalArgumentException("Cannot find exist user id \"${id}\"") })
 }

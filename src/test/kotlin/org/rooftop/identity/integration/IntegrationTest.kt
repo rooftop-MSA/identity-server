@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.rooftop.api.identity.*
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -213,6 +214,22 @@ internal class IntegrationTest(
             it("401 Unauthorized가 반환된다.") {
                 webClient.auth(firstUserToken, secondUserId)
                     .expectStatus().isUnauthorized
+            }
+        }
+    }
+
+    describe("token으로 유저 조회 API는") {
+        context("올바른 token이 들어온다면,") {
+            webClient.createUser(userCreateRequest)
+            val token = webClient.loginAndGetToken(userLoginRequest)
+
+            it("token에 해당하는 유저 정보를 응답한다.") {
+                val result = webClient.getUserByToken(token)
+                    .expectStatus().isOk
+                    .expectBody(UserGetByTokenRes::class.java)
+                    .returnResult().responseBody
+
+                result!!.name shouldBe NAME
             }
         }
     }
