@@ -9,6 +9,9 @@ import reactor.core.publisher.Mono
 internal interface UserUsecase {
 
     fun getByName(name: String): Mono<UserResponse>
+
+    fun getByToken(token: String): Mono<UserResponse>
+
     fun login(request: UserLoginRequest): Mono<String>
 
     fun createUser(request: UserCreateRequest): Mono<Unit>
