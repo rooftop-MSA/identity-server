@@ -1,10 +1,11 @@
 package org.rooftop.identity.controller
 
 import org.rooftop.api.identity.*
-import org.rooftop.identity.domain.UserUsecase
-import org.rooftop.identity.domain.request.UserCreateRequest
-import org.rooftop.identity.domain.request.UserLoginRequest
-import org.rooftop.identity.domain.request.UserUpdateRequest
+import org.rooftop.identity.domain.account.UserUsecase
+import org.rooftop.identity.domain.account.request.UserCreateRequest
+import org.rooftop.identity.domain.account.request.UserLoginRequest
+import org.rooftop.identity.domain.account.request.UserUpdateRequest
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
@@ -56,6 +57,18 @@ internal class UserController(private val userUsecase: UserUsecase) {
         @RequestHeader("password") password: String,
     ): Mono<Unit> = userUsecase.deleteUser(id, password)
 
+    @GetMapping("/v1/users/tokens")
+    @ResponseStatus(HttpStatus.OK)
+    fun getUserByToken(
+        @RequestHeader(HttpHeaders.AUTHORIZATION) token: String,
+    ): Mono<UserGetByTokenRes> = userUsecase.getByToken(token)
+        .map { userResponse ->
+            userGetByTokenRes {
+                this.id = userResponse.id
+                this.name = userResponse.name
+            }
+        }
+
     @PostMapping("/v1/logins")
     @ResponseStatus(HttpStatus.OK)
     fun login(@RequestBody request: UserLoginReq): Mono<UserLoginRes> {
@@ -70,6 +83,7 @@ internal class UserController(private val userUsecase: UserUsecase) {
             }
         }
     }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException::class)

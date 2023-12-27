@@ -1,4 +1,4 @@
-package org.rooftop.identity.domain
+package org.rooftop.identity.domain.account
 
 import java.util.concurrent.atomic.AtomicLong
 

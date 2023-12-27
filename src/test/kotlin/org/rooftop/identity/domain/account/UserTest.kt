@@ -1,4 +1,4 @@
-package org.rooftop.identity.domain
+package org.rooftop.identity.domain.account
 
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow

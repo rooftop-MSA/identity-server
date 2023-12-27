@@ -1,4 +1,4 @@
-package org.rooftop.identity.domain.response
+package org.rooftop.identity.domain.account.response
 
 internal data class UserResponse(
     val id: Long,

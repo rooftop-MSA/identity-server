@@ -1,9 +1,10 @@
-package org.rooftop.identity.domain
+package org.rooftop.identity.domain.account
 
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
+import io.mockk.spyk
 import org.rooftop.identity.infra.R2dbcConfig
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest
 import org.springframework.data.r2dbc.config.EnableR2dbcAuditing

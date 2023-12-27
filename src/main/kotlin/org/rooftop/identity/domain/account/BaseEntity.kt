@@ -1,4 +1,4 @@
-package org.rooftop.identity.domain
+package org.rooftop.identity.domain.account
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
