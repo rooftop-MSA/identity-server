@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
+import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.rooftop.api.identity.*
@@ -73,20 +74,25 @@ internal class IntegrationTest(
         }
     }
 
-//    describe("유저 id로 조회 API는") {
-//        context("저장된 유저의 id로 조회를 하면,") {
-//            webClient.createUser(userCreateRequest)
-//            val id = webClient.getUserId(userCreateRequest.name)
-//
-//            val expected = user
-//
-//            it("id에 해당하는 유저를 응답한다.") {
-//                val result = webClient.getUserById(id)
-//
-//                result.expectStatus().isOk
-//            }
-//        }
-//    }
+    describe("유저 id로 조회 API는") {
+        context("저장된 유저의 id로 조회를 하면,") {
+            webClient.createUser(userCreateRequest)
+
+            val expected = userGetByIdRes {
+                this.id = webClient.getUserId(userCreateRequest.name)
+                this.name = NAME
+            }
+
+            it("id에 해당하는 유저를 응답한다.") {
+                val result = webClient.getUserById(expected.id)
+
+                result.expectStatus().isOk
+                    .expectBody(UserGetByIdRes::class.java)
+                    .returnResult()
+                    .responseBody!! shouldBeEqual expected
+            }
+        }
+    }
 
     describe("유저 업데이트 API는") {
         val newName = "NEW_NAME"
