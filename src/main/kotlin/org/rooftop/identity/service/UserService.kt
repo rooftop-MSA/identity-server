@@ -42,6 +42,11 @@ internal class UserService(
             .map { user -> UserResponse(user.id, user.getName()) }
     }
 
+    override fun getById(id: Long): Mono<UserResponse> {
+        return getUserById(id)
+            .map { UserResponse(it.id, it.getName()) }
+    }
+
     @Transactional
     override fun createUser(request: UserCreateRequest): Mono<Unit> {
         return userRepository.save(
@@ -62,7 +67,7 @@ internal class UserService(
     @Modifying
     @Transactional
     override fun updateUser(request: UserUpdateRequest): Mono<Unit> {
-        return getById(request.id)
+        return getUserById(request.id)
             .flatMap { updateUser(it, request) }
             .map { }
     }
@@ -76,7 +81,7 @@ internal class UserService(
 
     @Transactional
     override fun deleteUser(id: Long, password: String): Mono<Unit> {
-        return getById(id).flatMap { deleteUser(it, password) }
+        return getUserById(id).flatMap { deleteUser(it, password) }
     }
 
     private fun deleteUser(user: User, password: String): Mono<Unit> {
@@ -88,13 +93,13 @@ internal class UserService(
     override fun getByToken(token: String): Mono<UserResponse> {
         return Mono.fromCallable { this.token.getId(token) }
             .flatMap {
-                getById(it)
+                getUserById(it)
             }
             .map { user ->
                 UserResponse(user.id, user.getName())
             }
     }
 
-    private fun getById(id: Long): Mono<User> = userRepository.findById(id)
+    private fun getUserById(id: Long): Mono<User> = userRepository.findById(id)
         .switchIfEmpty(Mono.error { throw IllegalArgumentException("Cannot find exist user id \"${id}\"") })
 }

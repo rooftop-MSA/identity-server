@@ -4,12 +4,13 @@ import org.rooftop.api.identity.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec
 
 private const val VERSION = "/v1"
 
 internal fun WebTestClient.createUser(
     body: UserCreateReq,
-): WebTestClient.ResponseSpec {
+): ResponseSpec {
     return this.post()
         .uri("$VERSION/users")
         .contentType(MediaType.APPLICATION_PROTOBUF)
@@ -17,18 +18,26 @@ internal fun WebTestClient.createUser(
         .exchange()
 }
 
+internal fun WebTestClient.getUserById(
+    id: Long,
+): ResponseSpec {
+    return this.get()
+        .uri("$VERSION/users/$id")
+        .exchange()
+}
+
 internal fun WebTestClient.getUserId(
     name: String,
 ): Long {
     return getUser(name)
-        .expectBody(UserGetRes::class.java)
+        .expectBody(UserGetByNameRes::class.java)
         .returnResult()
         .responseBody?.id ?: throw IllegalStateException("Test fail cause responseBody is null")
 }
 
 internal fun WebTestClient.getUser(
     name: String,
-): WebTestClient.ResponseSpec {
+): ResponseSpec {
     return this.get()
         .uri("$VERSION/users?name=$name")
         .exchange()
@@ -36,7 +45,7 @@ internal fun WebTestClient.getUser(
 
 internal fun WebTestClient.updateUser(
     body: UserUpdateReq,
-): WebTestClient.ResponseSpec {
+): ResponseSpec {
     return this.put()
         .uri("$VERSION/users")
         .contentType(MediaType.APPLICATION_PROTOBUF)
@@ -55,7 +64,7 @@ internal fun WebTestClient.loginAndGetToken(
 
 internal fun WebTestClient.login(
     body: UserLoginReq,
-): WebTestClient.ResponseSpec {
+): ResponseSpec {
     return this.post()
         .uri("$VERSION/logins")
         .contentType(MediaType.APPLICATION_PROTOBUF)
@@ -66,7 +75,7 @@ internal fun WebTestClient.login(
 internal fun WebTestClient.deleteUser(
     id: Long,
     password: String,
-): WebTestClient.ResponseSpec {
+): ResponseSpec {
     return this.delete()
         .uri("$VERSION/users")
         .headers {
@@ -76,7 +85,7 @@ internal fun WebTestClient.deleteUser(
         .exchange()
 }
 
-internal fun WebTestClient.auth(token: String, requesterId: Long): WebTestClient.ResponseSpec {
+internal fun WebTestClient.auth(token: String, requesterId: Long): ResponseSpec {
     return this.get()
         .uri("$VERSION/auths")
         .header(HttpHeaders.AUTHORIZATION, token)
@@ -84,7 +93,7 @@ internal fun WebTestClient.auth(token: String, requesterId: Long): WebTestClient
         .exchange()
 }
 
-internal fun WebTestClient.getUserByToken(token: String): WebTestClient.ResponseSpec {
+internal fun WebTestClient.getUserByToken(token: String): ResponseSpec {
     return this.get()
         .uri("$VERSION/users/tokens")
         .header(HttpHeaders.AUTHORIZATION, token)
