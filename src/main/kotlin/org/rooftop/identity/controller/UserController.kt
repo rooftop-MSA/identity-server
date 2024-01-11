@@ -15,12 +15,23 @@ internal class UserController(private val userUsecase: UserUsecase) {
 
     @GetMapping("/v1/users")
     @ResponseStatus(HttpStatus.OK)
-    fun getUser(@RequestParam("name") name: String): Mono<UserGetByNameRes> {
+    fun getUserByName(@RequestParam("name") name: String): Mono<UserGetByNameRes> {
         return userUsecase.getByName(name)
             .map { response ->
                 userGetByNameRes {
                     this.id = response.id
                     this.name = response.name
+                }
+            }
+    }
+
+    @GetMapping("/v1/users/{id}")
+    fun getUserById(@PathVariable("id") id: Long): Mono<UserGetByIdRes> {
+        return userUsecase.getById(id)
+            .map {
+                userGetByIdRes {
+                    this.id = it.id
+                    this.name = it.name
                 }
             }
     }

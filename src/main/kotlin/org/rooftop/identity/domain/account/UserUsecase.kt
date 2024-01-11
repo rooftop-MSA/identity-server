@@ -12,6 +12,8 @@ internal interface UserUsecase {
 
     fun getByToken(token: String): Mono<UserResponse>
 
+    fun getById(id: Long): Mono<UserResponse>
+
     fun login(request: UserLoginRequest): Mono<String>
 
     fun createUser(request: UserCreateRequest): Mono<Unit>
