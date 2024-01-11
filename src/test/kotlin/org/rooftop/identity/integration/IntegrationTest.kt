@@ -48,7 +48,7 @@ internal class IntegrationTest(
 
         context("저장된 유저를 조회할 경우,") {
             webClient.createUser(userCreateRequest)
-            val expectedUserResponse = userGetRes {
+            val expectedUserResponse = userGetByNameRes {
                 id = 0L
                 name = NAME
             }
@@ -59,7 +59,7 @@ internal class IntegrationTest(
                     .expectBody()
                     .shouldBeEqualToIgnoringFields(
                         expectedUserResponse,
-                        UserGetRes::ID_FIELD_NUMBER
+                        UserGetByNameRes::ID_FIELD_NUMBER
                     )
             }
         }
@@ -72,6 +72,21 @@ internal class IntegrationTest(
             }
         }
     }
+
+//    describe("유저 id로 조회 API는") {
+//        context("저장된 유저의 id로 조회를 하면,") {
+//            webClient.createUser(userCreateRequest)
+//            val id = webClient.getUserId(userCreateRequest.name)
+//
+//            val expected = user
+//
+//            it("id에 해당하는 유저를 응답한다.") {
+//                val result = webClient.getUserById(id)
+//
+//                result.expectStatus().isOk
+//            }
+//        }
+//    }
 
     describe("유저 업데이트 API는") {
         val newName = "NEW_NAME"
@@ -94,7 +109,7 @@ internal class IntegrationTest(
 
                 webClient.getUser(newName)
                     .expectStatus().isOk
-                    .expectBody().shouldBeEqualToComparingFields(userGetRes {
+                    .expectBody().shouldBeEqualToComparingFields(userGetByNameRes {
                         this.id = id
                         this.name = newName
                     })
